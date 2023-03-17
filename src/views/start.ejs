@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Successful</title>
+    <style>
+      body {
+        background: linear-gradient(to bottom, #a6998a, #ffffff);
+        background-size: 100% 100%;
+        background-attachment: fixed;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .content {
+        text-align: center;
+        color: white;
+      }
+
+      button {
+        background-color: #796a53;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #544835;
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h1>Login Successful</h1>
+      <h2>Welcome back!</h2>
+      <button type="button" onclick="location.href='/login';">Log out</button>
+    </div>
+  </body>
+</html>

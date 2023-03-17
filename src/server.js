@@ -5,12 +5,18 @@ const db = require('./database.js')
 let port = 3000;
 
 app.set('view engine', 'ejs')
-app.set('views', __dirname + '/src/lab4')
+app.set('views', __dirname + '/views')
 
 app.get('/admin', (req, res) => {
-    res.render('admin.ejs', {users: users})
-})
+
+    db.all (`SELECT * FROM Users`, [], (err, rows) =>{
+        if(err){
+            throw err;
+        }
+        res.render('admin.ejs', {users: rows})
+    })
+});
 
 app.listen(port, function(){
     console.log(`Server is listening on ${port}...`)
-})
+});

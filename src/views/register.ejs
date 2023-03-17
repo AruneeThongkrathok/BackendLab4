@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <style>
+      body {
+        background: linear-gradient(to bottom, #a6998a, #ffffff);
+        background-size: 100% 100%;
+        background-attachment: fixed;
+      }
+      /* Center the form on the page */
+      #login-form {
+        width: 400px;
+        margin: auto;
+        padding: 100px;
+        border: 3px solid #b3a495;
+        border-radius: 20px;
+        box-shadow: 0px 0px 5px 0px #ccc;
+        background-color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Style the form fields */
+      input[type="text"],
+      input[type="password"] {
+        width: 95%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      /* Style the buttons */
+      button {
+        background-color: #796a53;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.5);
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #544835;
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <form id="login-form" action="" method="post">
+      <h2>Register</h2>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
+      <button type="button" onclick="location.href='/login';">
+        Go back to login
+      </button>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
