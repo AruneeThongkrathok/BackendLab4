@@ -1,11 +1,14 @@
 const express = require ('express');
 const app = express();
-const db = require('./database.js')
+const db = require('./database.js');
+const jwt = require('jsonwebtoken');
 
 let port = 3000;
 
-app.set('view engine', 'ejs')
-app.set('views', __dirname + '/views')
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+
+
 
 app.get('/admin', (req, res) => {
 
@@ -13,10 +16,11 @@ app.get('/admin', (req, res) => {
         if(err){
             throw err;
         }
-        res.render('admin.ejs', {users: rows})
-    })
+        res.render('admin.ejs', {users: rows});
+    });
 });
 
 app.listen(port, function(){
-    console.log(`Server is listening on ${port}...`)
+    
+    console.log(`Server is listening on ${port}...`);
 });
