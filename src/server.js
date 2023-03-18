@@ -9,7 +9,7 @@ require('dotenv').config()
 let port = 3000
 
 var currentKey = ''
-var currentPassword = ''
+var currentUsername = ''
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -26,6 +26,7 @@ function authenticateToken (req, res, next){
 
     }else if(jwt.verify(currentKey, process.env.TOKEN)){
         req.role = jwt.decode(currentKey)
+        console.log(currentKey)
         next();
     }else{
         res.status(401).send('Unauthorized')
@@ -34,14 +35,24 @@ function authenticateToken (req, res, next){
 
 //user verification
 app.post('/identify', (req, res) => {
+
     const username = req.body.username
     const password = req.body.password
-    const token = jwt.sign(username, process.env.TOKEN)
-    currentKey = token
-    currentPassword = username
-    res.redirect('/granted')
-    console.log(token)
 
+    db.get(`SELECT * FROM Users WHERE name = ? AND password = ?`, [username, password], function(err, row) {
+        if (err) {
+          console.log(err.message)
+          res.status(500).send('Internal Server Error')
+        } else if (!row) {
+            res.render('fail.ejs')
+        } else {
+            const token = jwt.sign(username, process.env.TOKEN)
+            currentKey = token
+            currentUsername = username
+            res.redirect('/granted')
+            console.log(token)
+        }
+    })
 })
 
 app.get('/identify', (req, res) => {
