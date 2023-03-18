@@ -10,7 +10,7 @@ let port = 3000
 
 var currentKey = ''
 var currentUsername = ''
-var currentRole = ''
+var currentUserID = ''
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -30,8 +30,8 @@ function authenticateToken(req, res, next) {
           res.status(401).send("Unauthorized");
           console.log("401: Unauthorized");
         } else {
-          currentRole = decoded.role
-          console.log('at authenticateToken: ',currentRole)
+          currentUserID = decoded.userId
+          console.log('at authenticateToken: ',)
           next();
         }
       });
@@ -51,13 +51,13 @@ app.post('/identify', (req, res) => {
         } else if (!row) {
             res.render('fail.ejs')
         } else {
-            const role = row.role
-            const token = jwt.sign({role}, process.env.TOKEN)
+            const userId = row.userID
+            const token = jwt.sign({userId}, process.env.TOKEN)
             currentKey = token
             currentUsername = username
-            currentRole = role
+            currentUserID = userId
             res.redirect('/granted')
-            console.log('post /identify: ',role)
+            console.log('post /identify: ',userId)
         }
     })
 })
@@ -72,33 +72,34 @@ app.get('/granted', authenticateToken, (req, res) => {
 
 app.get('/admin', authenticateToken, (req, res) => {
 
-    if (req.role === 'admin') {
+    if (currentUserID === 'admin') {
       db.all(`SELECT * FROM Users`, function(err, rows) {
         if (err) {
-            console.log("get /identify", decoded.role); 
+            console.log("get /admin", currentUserID); 
             return console.log(err.message)
         }
         res.render('admin.ejs', { users: rows })
       })
     } else {
         res.redirect("/identify")
+        console.log('get /admin', currentUserID)
     }
 
 })
 
 app.get('/student1', authenticateToken, (req, res) =>{
     
-    const allowedRoles = ['admin', 'teacher', 'student']
-    const role = currentRole
-    if (allowedRoles.includes(role)){
-        db.all(`SELECT * FROM Users WHERE role = ? AND name = ?`, [role, currentUsername], function(err,rows){
+    const allowedRoles = ['admin', 'id1', 'id3']
+    const userId = currentUserID
+    if (allowedRoles.includes(userId)){
+        db.all(`SELECT * FROM Users WHERE userID = ? AND name = ?`, [userId, currentUsername], function(err,rows){
             if (err) {
                 return console.log(err.message)
             }
             res.render('student1.ejs', {users: rows[0]})
         })
     }else{
-        console.log('get /student',role)
+        console.log('get /student',userId)
         res.redirect('/identify');
         console.log('/student: unauthorized')
     }

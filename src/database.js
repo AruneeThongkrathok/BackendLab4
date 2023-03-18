@@ -14,7 +14,7 @@ db.serialize(function(){
     db.run( `INSERT INTO Users (userID, role, name, password) VALUES
             ('id1', 'student', 'user1', 'password'),
             ('id2', 'student', 'user2', 'password2'),
-            ('id3', 'teacher', 'user3', 'password3'),
+            ('id3', 'teacher', 'use r3', 'password3'),
             ('admin', 'admin', 'admin', 'admin' )`)
     })
 
