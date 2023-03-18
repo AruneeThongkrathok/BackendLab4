@@ -19,19 +19,23 @@ app.get('/', (req,res) => {
 })
 
 // middleware
-function authenticateToken (req, res, next){
+function authenticateToken(req, res, next) {
 
-    if(currentKey == ""){
-        res.redirect("/identify")
-
-    }else if(jwt.verify(currentKey, process.env.TOKEN)){
-        req.role = jwt.decode(currentKey)
-        console.log(currentKey)
-        next();
-    }else{
-        res.status(401).send('Unauthorized')
+    if (currentKey == "") {
+      res.redirect("/identify");
+    } else {
+      jwt.verify(currentKey, process.env.TOKEN, function (err, decoded) {
+        if (err) {
+          res.status(401).send("Unauthorized");
+          console.log("401: Unauthorized");
+        } else {
+          req.role = decoded;
+          console.log(currentKey);
+          next();
+        }
+      });
     }
-}
+  }
 
 //user verification
 app.post('/identify', (req, res) => {
@@ -74,10 +78,22 @@ app.get('/admin', authenticateToken, (req, res) => {
       })
     } else {
         res.redirect("/identify")
-      
     }
 
 })
+
+app.get('/student1', (req, res) =>{
+    res.render('student1.ejs')
+})
+
+app.get('/student2', (req, res) =>{
+    res.render('student2.ejs')
+} )
+
+app.get('/teacher', (req, res) =>{
+    res.render('teacher.ejs')
+})
+
 
 app.listen(port, function(){
 
