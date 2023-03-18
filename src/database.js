@@ -11,11 +11,12 @@ db.serialize(function(){
         name TEXT,
         password TEXT)`)
 
-    db.run( `INSERT INTO Users (userID, role, name, password) VALUES(?,?,?,?),
+    db.run( `INSERT INTO Users (userID, role, name, password) VALUES
             ('id1', 'student', 'user1', 'password'),
             ('id2', 'student', 'user2', 'password2'),
             ('id3', 'teacher', 'user3', 'password3'),
             ('admin', 'admin', 'admin', 'admin' )`)
     })
 
-module.exports = db
+
+module.exports = (db)
