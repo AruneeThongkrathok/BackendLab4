@@ -10,6 +10,7 @@ let port = 3000
 
 var currentKey = ''
 var currentUsername = ''
+var currentRole = ''
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -29,8 +30,8 @@ function authenticateToken(req, res, next) {
           res.status(401).send("Unauthorized");
           console.log("401: Unauthorized");
         } else {
-          req.role = decoded;
-          console.log(currentKey);
+          currentRole = decoded.role
+          console.log('at authenticateToken: ',currentRole)
           next();
         }
       });
@@ -50,11 +51,13 @@ app.post('/identify', (req, res) => {
         } else if (!row) {
             res.render('fail.ejs')
         } else {
-            const token = jwt.sign(username, process.env.TOKEN)
+            const role = row.role
+            const token = jwt.sign({role}, process.env.TOKEN)
             currentKey = token
             currentUsername = username
+            currentRole = role
             res.redirect('/granted')
-            console.log(token)
+            console.log('post /identify: ',role)
         }
     })
 })
@@ -72,7 +75,8 @@ app.get('/admin', authenticateToken, (req, res) => {
     if (req.role === 'admin') {
       db.all(`SELECT * FROM Users`, function(err, rows) {
         if (err) {
-          return console.log(err.message)
+            console.log("get /identify", decoded.role); 
+            return console.log(err.message)
         }
         res.render('admin.ejs', { users: rows })
       })
@@ -82,8 +86,22 @@ app.get('/admin', authenticateToken, (req, res) => {
 
 })
 
-app.get('/student1', (req, res) =>{
-    res.render('student1.ejs')
+app.get('/student1', authenticateToken, (req, res) =>{
+    
+    const allowedRoles = ['admin', 'teacher', 'student']
+    const role = currentRole
+    if (allowedRoles.includes(role)){
+        db.all(`SELECT * FROM Users WHERE role = ? AND name = ?`, [role, currentUsername], function(err,rows){
+            if (err) {
+                return console.log(err.message)
+            }
+            res.render('student1.ejs', {users: rows[0]})
+        })
+    }else{
+        console.log('get /student',role)
+        res.redirect('/identify');
+        console.log('/student: unauthorized')
+    }
 })
 
 app.get('/student2', (req, res) =>{
