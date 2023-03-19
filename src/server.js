@@ -31,7 +31,7 @@ function authenticateToken(req, res, next) {
           console.log("401: Unauthorized");
         } else {
           currentUserID = decoded.userId
-          console.log('at authenticateToken: ',)
+          console.log('at authenticateToken: ', currentUserID)
           next();
         }
       });
@@ -99,14 +99,28 @@ app.get('/student1', authenticateToken, (req, res) =>{
             res.render('student1.ejs', {users: rows[0]})
         })
     }else{
-        console.log('get /student',userId)
+        console.log('get /student1',userId)
         res.redirect('/identify');
         console.log('/student: unauthorized')
     }
 })
 
 app.get('/student2', (req, res) =>{
-    res.render('student2.ejs')
+
+    const allowedRoles = ['admin', 'id2', 'id3']
+    const userId = currentUserID
+    if (allowedRoles.includes(userId)){
+        db.all(`SELECT * FROM Users WHERE userID = ? AND name = ?`, [userId, currentUsername], function(err,rows){
+            if (err) {
+                return console.log(err.message)
+            }
+            res.render('student2.ejs', {users: rows[0]})
+        })
+    }else{
+        console.log('get /student2',userId)
+        res.redirect('/identify');
+        console.log('/student: unauthorized')
+    }
 } )
 
 app.get('/teacher', (req, res) =>{
