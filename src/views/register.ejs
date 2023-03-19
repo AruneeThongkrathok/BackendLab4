@@ -9,7 +9,7 @@
         background-attachment: fixed;
       }
       /* Center the form on the page */
-      #login-form {
+      #register-form {
         width: 400px;
         margin: auto;
         padding: 100px;
@@ -55,12 +55,18 @@
     </style>
   </head>
   <body>
-    <form id="login-form" action="" method="post">
+    <form id="register-form" action="" method="post">
       <h2>Register</h2>
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required />
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required />
+      <label for="role">Choose your role:</label><br />
+      <input type="radio" id="student" name="role" value="student" checked />
+      <label for="student">Student</label><br />
+      <input type="radio" id="teacher" name="role" value="teacher" />
+      <label for="teacher">Teacher</label><br />
+      <br />
       <button type="button" onclick="location.href='/identify';">
         Go back to login
       </button>

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 require('dotenv').config()
+const bcrypt = require('bcrypt')
 
 let port = 3000
 
@@ -145,6 +146,12 @@ app.get('/register', (req,res) =>{
     res.render('register.ejs')
 })
 
+app.post('/register', (req, res) =>{
+    const {name, password, role} = req.body
+
+    
+
+})
 
 app.listen(port, function(){
 
