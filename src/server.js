@@ -149,7 +149,16 @@ app.get('/register', (req,res) =>{
 app.post('/register', (req, res) =>{
     const {name, password, role} = req.body
 
-    
+    db.get('SELECT * From Users where name = ?', [name], function (err, row){
+        if (err){
+            console.log(err)
+            res.status(500).send('User already exist')
+        } else{
+            // 1. hash password 
+            // 2. generate a randome userID
+            // 3. insert userID, name, password, role in database
+        }
+    })
 
 })
 
