@@ -101,7 +101,7 @@ app.get('/student1', authenticateToken, (req, res) =>{
     }else{
         console.log('get /student1',userId)
         res.redirect('/identify');
-        console.log('/student: unauthorized')
+        console.log('/student1: unauthorized')
     }
 })
 
@@ -119,12 +119,30 @@ app.get('/student2', (req, res) =>{
     }else{
         console.log('get /student2',userId)
         res.redirect('/identify');
-        console.log('/student: unauthorized')
+        console.log('/student2: unauthorized')
     }
 } )
 
 app.get('/teacher', (req, res) =>{
-    res.render('teacher.ejs')
+
+    const allowedRoles = ['admin', 'id3']
+    const userId = currentUserID
+    if (allowedRoles.includes(userId)){
+        db.all(`SELECT * FROM Users WHERE userID = ? AND name = ?`, [userId, currentUsername], function(err,rows){
+            if (err) {
+                return console.log(err.message)
+            }
+            res.render('teacher.ejs', {users: rows[0]})
+        })
+    }else{
+        console.log('get /teacher',userId)
+        res.redirect('/identify');
+        console.log('/teacher: unauthorized')
+    }
+})
+
+app.get('/register', (req,res) =>{
+    res.render('register.ejs')
 })
 
 
