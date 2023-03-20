@@ -60,8 +60,9 @@ app.post('/identify', (req, res) => {
             console.log(`User with name '${username}' does not exist.`)
             return;
         }
-        
+
         //run this code to test requirements for grade 3 and 4
+        //comment out this code to test for grade 5
         const userId = row.userID
         const token = jwt.sign({userId}, process.env.TOKEN)
         currentKey = token
@@ -72,6 +73,7 @@ app.post('/identify', (req, res) => {
         console.log('post /identify: ',userId)
         
         //run this code to test requirements for grade 5
+        //comment out this code to test for grade 3 and 4
         /*bcrypt.compare(password, row.password, function(err, result){
             if (err){
                 console.log(err)
