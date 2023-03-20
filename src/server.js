@@ -12,6 +12,7 @@ let port = 3000
 var currentKey = ''
 var currentUsername = ''
 var currentUserID = ''
+var currentHashedPassword = ''
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -24,16 +25,17 @@ app.get('/', (req,res) => {
 function authenticateToken(req, res, next) {
 
     if (currentKey == "") {
-      res.redirect("/identify");
+        console.log('no token found')
+        res.redirect("/identify");
     } else {
       jwt.verify(currentKey, process.env.TOKEN, function (err, decoded) {
         if (err) {
           res.status(401).send("Unauthorized");
-          console.log("401: Unauthorized");
+          console.log("at authentication: Token not verified ");
         } else {
-          currentUserID = decoded.userId
-          console.log('at authenticateToken: ', currentUserID)
-          next();
+            currentUserID = decoded.userId
+            console.log('at authenticateToken: ', currentUserID)
+            next();
         }
       });
     }
@@ -45,22 +47,42 @@ app.post('/identify', (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
-    db.get(`SELECT * FROM Users WHERE name = ? AND password = ?`, [username, password], function(err, row) {
+    db.get(`SELECT * FROM Users WHERE name = ?`, [username], function(err, row) {
+
         if (err) {
-          console.log(err.message)
-          res.status(500).send('Internal Server Error')
-        } else if (!row) {
+            res.status(500).send('Internal server error');
+            console.log(err);
+            return;
+          }
+
+        if (!row) {
             res.render('fail.ejs')
-        } else {
-            const userId = row.userID
-            const token = jwt.sign({userId}, process.env.TOKEN)
-            currentKey = token
-            currentUsername = username
-            currentUserID = userId
-            res.redirect('/granted')
-            console.log('post /identify: ',userId)
+            console.log(`User with name '${username}' does not exist.`)
+            return;
         }
+        
+        bcrypt.compare(password, row.password, function(err, result){
+            if (err){
+                console.log(err)
+                res.status(500).send('Internal server error')
+            }else if (result){
+                const userId = row.userID
+                const token = jwt.sign({userId}, process.env.TOKEN)
+                currentKey = token
+                currentUsername = username
+                currentUserID = userId
+                currentHashedPassword = row.password
+                res.redirect('/granted')
+                console.log('post /identify: ',userId)
+            }else{
+                res.render('fail.ejs')
+                console.log(`User with name '${username}' entered the wrong password.`);
+
+            }
+            
+        })
     })
+    
 })
 
 app.get('/identify', (req, res) => {
@@ -147,17 +169,38 @@ app.get('/register', (req,res) =>{
 })
 
 app.post('/register', (req, res) =>{
-    const {name, password, role} = req.body
+    const {username, password, role} = req.body
 
-    db.get('SELECT * From Users where name = ?', [name], function (err, row){
+    db.get('SELECT * From Users where name = ?', [username], function (err, row){
         if (err){
             console.log(err)
             res.status(500).send('User already exist')
-        } else{
-            // 1. hash password 
-            // 2. generate a randome userID
-            // 3. insert userID, name, password, role in database
+
+        }else if (row){
+            res.render('failRegistration.ejs')
+
+        } else {
+
+            bcrypt.hash(password, 10, function (err, hashedPassword){
+                if(err){
+                    console.log(err)
+                    res.status(500).send('Internal Server Error')
+                }else{
+                    const userID = 'user' + Math.floor(Math.random() * 100)
+                    db.run('INSERT INTO Users(userID, role, name, password) VALUES (?,?,?,?)', [userID, role ,username, hashedPassword], function(err){
+                        if (err){
+                            console.log(err)
+                            res.status(500).send('Internal Server Error')
+                        } else {
+                            console.log(userID, username, hashedPassword, role )
+                            currentHashedPassword = hashedPassword
+                            res.redirect('/identify')
+                        }
+                    })
+                }
+            })
         }
+    
     })
 
 })
