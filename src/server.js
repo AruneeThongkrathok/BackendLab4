@@ -13,6 +13,7 @@ var currentKey = ''
 var currentUsername = ''
 var currentUserID = ''
 var currentHashedPassword = ''
+var currentRole = ''
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -44,8 +45,8 @@ function authenticateToken(req, res, next) {
 //user verification
 app.post('/identify', (req, res) => {
 
-    const username = req.body.username
-    const password = req.body.password
+    const { username, password } = req.body;
+
 
     db.get(`SELECT * FROM Users WHERE name = ?`, [username], function(err, row) {
 
@@ -63,18 +64,18 @@ app.post('/identify', (req, res) => {
 
         //run this code to test requirements for grade 3 and 4
         //comment out this code to test for grade 5
-        const userId = row.userID
+        /*const userId = row.userID
         const token = jwt.sign({userId}, process.env.TOKEN)
         currentKey = token
         currentUsername = username
         currentUserID = userId
         currentHashedPassword = row.password
         res.redirect('/granted')
-        console.log('post /identify: ',userId)
+        console.log('post /identify: ',userId)*/
         
         //run this code to test requirements for grade 5
         //comment out this code to test for grade 3 and 4
-        /*bcrypt.compare(password, row.password, function(err, result){
+        bcrypt.compare(password, row.password, function(err, result){
             if (err){
                 console.log(err)
                 res.status(500).send('Internal server error')
@@ -85,15 +86,16 @@ app.post('/identify', (req, res) => {
                 currentUsername = username
                 currentUserID = userId
                 currentHashedPassword = row.password
-                res.redirect('/granted')
+                res.redirect(`/users/${userId}`)
                 console.log('post /identify: ',userId)
+                console.log('currentUsername: ',currentUsername)
             }else{
                 res.render('fail.ejs')
                 console.log(`User with name '${username}' entered the wrong password.`);
 
             }
             
-        })*/
+        })
     })
     
 })
@@ -214,6 +216,25 @@ app.post('/register', (req, res) =>{
             })
         }
     })
+})
+
+app.get('/users/:userId', authenticateToken, (req, res) =>{
+    
+    const userId = req.params.userId
+
+    if (currentUserID != userId){
+        res.redirect('/identify');
+        console.log(currentUserID, userId)
+        return;
+    }
+    db.get(`SELECT role FROM Users WHERE userID = ?`, [currentUserID], function(err,rows){
+        if (err) {
+            return console.log(err.message)
+        }
+        currentRole = rows.role
+        res.render('profile.ejs', {currentUsername, currentUserID, currentRole })
+    })
+   
 })
 
 app.listen(port, function(){
