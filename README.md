@@ -38,7 +38,7 @@ Please note that the testing requirements for different grades may vary due to t
 
 ### You can test grade 3 & 4 requirements by following these steps:
 
-To test for requirements for grade 3 and 4, comment out the code block that uses bcrypt to compare passwords, and uncomment the code block that doesn't use bcrypt function in server.js. There is a description comments in server.js that says where the code should be commented out and uncommented to run the code for specific grade requiremtns.
+To test for requirements for grade 3 and 4, comment out the code block that uses bcrypt to compare passwords, and uncomment the code block that doesn't use bcrypt function in server.js. There is a description comments in server.js that says where the code should be commented out and uncommented to run the code for specific grade requirements.
 
 1. Start the server by running 'node src/server.js' command in the terminal.
 2. Open your web browser and go to http://localhost:3000/login.
@@ -54,7 +54,7 @@ To test for requirements for grade 3 and 4, comment out the code block that uses
 
 ### You can test grade 5 requirements by following these steps:
 
-To test for the requirements for grade 5, comment out the code block that generates a token for a user and uncomment the code block that uses bcrypt to compare passwords in server.js. There is a description comments in server.js that says where the code should be commented out and uncommented to run the code for specific grade requiremnts.
+To test for the requirements for grade 5, comment out the code block that generates a token for a user and uncomment the code block that uses bcrypt to compare passwords in server.js. There is a description comments in server.js that says where the code should be commented out and uncommented to run the code for specific grade requirements.
 
 1. Start the server by running 'node src/server.js' command in the terminal
 2. Register a new user by clicking on the "Register" button on the homepage and filling in the required information.
