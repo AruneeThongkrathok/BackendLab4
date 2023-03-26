@@ -64,18 +64,20 @@ app.post('/identify', (req, res) => {
 
         //run this code to test requirements for grade 3 and 4
         //comment out this code to test for grade 5
-        /*const userId = row.userID
+
+        const userId = row.userID
         const token = jwt.sign({userId}, process.env.TOKEN)
         currentKey = token
         currentUsername = username
         currentUserID = userId
         currentHashedPassword = row.password
         res.redirect('/granted')
-        console.log('post /identify: ',userId)*/
+        console.log('post /identify: ',userId)
         
         //run this code to test requirements for grade 5
         //comment out this code to test for grade 3 and 4
-        bcrypt.compare(password, row.password, function(err, result){
+        
+        /*bcrypt.compare(password, row.password, function(err, result){
             if (err){
                 console.log(err)
                 res.status(500).send('Internal server error')
@@ -95,7 +97,7 @@ app.post('/identify', (req, res) => {
 
             }
             
-        })
+        })*/
     })
     
 })
